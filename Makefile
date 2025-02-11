@@ -11,7 +11,8 @@ include $(DEVKITARM)/gba_rules
 #---------------------------------------------------------------------------------
 # the LIBGBA path is defined in gba_rules, but we have to define LIBTONC ourselves
 #---------------------------------------------------------------------------------
-LIBTONC := /home/eris/libtonc/lib/ # Correct path to the library files
+LIBTONC_INCLUDE := /home/eris/libtonc/include   # path for header files
+LIBTONC_LIB := /home/eris/libtonc/lib           # path for library files
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
@@ -47,7 +48,7 @@ CFLAGS	+=	$(INCLUDE)
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -fno-exceptions
 
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-g $(ARCH) -Wl,-Map,$(notdir $*.map) -L$(LIBTONC)  # Explicitly adding the LIBTONC path here
+LDFLAGS	=	-g $(ARCH) -Wl,-Map,$(notdir $*.map) -L$(LIBTONC_LIB)  # Linking against the library folder
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
@@ -59,7 +60,7 @@ LIBS	:= -lmm -ltonc
 # include and lib.
 # the LIBGBA path should remain in this list if you want to use maxmod
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	$(LIBGBA) $(LIBTONC)  # This now includes the directory with libtonc.a
+LIBDIRS	:=	$(LIBGBA) $(LIBTONC_LIB)  # This is for the linking step
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -115,9 +116,9 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES))) $(PNGFILES:.png=.h)
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-iquote $(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 					-I$(CURDIR)/$(BUILD) \
-					-I$(LIBTONC)
+					-I$(LIBTONC_INCLUDE)   # Pointing to the header directory here
 
-export LIBPATHS	:=	-L$(LIBTONC) $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+export LIBPATHS	:=	-L$(LIBTONC_LIB) $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 .PHONY: $(BUILD) clean
 
