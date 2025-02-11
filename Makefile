@@ -11,7 +11,7 @@ include $(DEVKITARM)/gba_rules
 #---------------------------------------------------------------------------------
 # the LIBGBA path is defined in gba_rules, but we have to define LIBTONC ourselves
 #---------------------------------------------------------------------------------
-LIBTONC := $(DEVKITPRO)/libtonc
+LIBTONC := /home/eris/libtonc/lib/ # Correct path to the library files
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
@@ -47,26 +47,24 @@ CFLAGS	+=	$(INCLUDE)
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -fno-exceptions
 
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-g $(ARCH) -Wl,-Map,$(notdir $*.map)
+LDFLAGS	=	-g $(ARCH) -Wl,-Map,$(notdir $*.map) -L$(LIBTONC)  # Explicitly adding the LIBTONC path here
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
 LIBS	:= -lmm -ltonc
 
-
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib.
 # the LIBGBA path should remain in this list if you want to use maxmod
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	$(LIBGBA) $(LIBTONC)
+LIBDIRS	:=	$(LIBGBA) $(LIBTONC)  # This now includes the directory with libtonc.a
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
 #---------------------------------------------------------------------------------
-
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
@@ -116,9 +114,10 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES))) $(PNGFILES:.png=.h)
 
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-iquote $(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-					-I$(CURDIR)/$(BUILD)
+					-I$(CURDIR)/$(BUILD) \
+					-I$(LIBTONC)
 
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+export LIBPATHS	:=	-L$(LIBTONC) $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 .PHONY: $(BUILD) clean
 
