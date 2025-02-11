@@ -4,3 +4,5 @@ build/
 *.gba
 *.lnk
 *.elf
+
+.idea
