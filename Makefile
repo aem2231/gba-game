@@ -11,8 +11,8 @@ include $(DEVKITARM)/gba_rules
 #---------------------------------------------------------------------------------
 # the LIBGBA path is defined in gba_rules, but we have to define LIBTONC ourselves
 #---------------------------------------------------------------------------------
-LIBTONC_INCLUDE := /home/eris/libtonc/include   # path for header files
-LIBTONC_LIB := /home/eris/libtonc/lib           # path for library files
+LIBTONC_INCLUDE := $(HOME)/libtonc/include   # path for header files
+LIBTONC_LIB := $(HOME)/libtonc/lib           # path for library files
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
